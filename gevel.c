@@ -2,6 +2,9 @@
 
 #include "access/genam.h"
 #include "access/gin.h"
+#if PG_VERSION_NUM >= 90600
+#include <catalog/pg_am.h>
+#endif
 #if PG_VERSION_NUM >= 90400
 #include "utils/snapmgr.h"
 #endif
@@ -142,7 +145,7 @@ gin_index_close(Relation rel) {
 
 static Relation
 checkOpenedRelation(Relation r, Oid PgAmOid) {
-	if ( r->rd_am == NULL )
+	if ( r->rd_index == NULL )
 		elog(ERROR, "Relation %s.%s is not an index",
 					get_namespace_name(RelationGetNamespace(r)),
 					RelationGetRelationName(r)
